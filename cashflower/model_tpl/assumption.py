@@ -1,5 +1,5 @@
 import pandas as pd
 
 
-assumption = dict()
+assumption = {}
 # assumption["mortality"] = pd.read_csv("")

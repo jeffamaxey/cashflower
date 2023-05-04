@@ -156,9 +156,7 @@ class ModelVariable:
         self.grandchildren = []
 
     def __repr__(self):
-        if self.name is None:
-            return "MV: NoName"
-        return f"MV: {self.name}"
+        return "MV: NoName" if self.name is None else f"MV: {self.name}"
 
     def __lt__(self, other):
         return len(self.grandchildren) < len(other.grandchildren)
@@ -183,7 +181,7 @@ class ModelVariable:
     def formula(self, new_formula):
         params = inspect.signature(new_formula).parameters
 
-        if not (len(params) == 1 and "t" in params.keys()):
+        if len(params) != 1 or "t" not in params.keys():
             raise CashflowModelError(f"\nModel variable formula must have only one parameter: 't'. "
                                      f"Please check code for {new_formula.__name__}.")
 
@@ -296,7 +294,7 @@ class Model:
         self.queue = queue
 
     def set_empty_output(self):
-        empty_output = dict()
+        empty_output = {}
         aggregate = self.settings["AGGREGATE"]
 
         for modelpoint in self.modelpoints:

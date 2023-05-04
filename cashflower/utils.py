@@ -28,7 +28,7 @@ def get_cell(df, column, **kwargs):
         raise ValueError("get_cell() has returned multiple rows.")
 
     if df.shape[0] == 0:
-        raise ValueError(f"get_cell() has returned 0 rows. \nParameters: {str(kwargs)}")
+        raise ValueError(f"get_cell() has returned 0 rows. \nParameters: {kwargs}")
 
     return df[column].values[0]
 
@@ -52,11 +52,7 @@ def unique_extend(lst1, lst2):
 
 def list_used_words(text, words):
     """Choose words from a list that were used in a text."""
-    used_words = []
-    for word in words:
-        if word in text:
-            used_words.append(word)
-    return used_words
+    return [word for word in words if word in text]
 
 
 def replace_in_file(_file, _from, _to):
@@ -93,9 +89,7 @@ def flatten(lst, n=None):
         lst = [sublist[:n] for sublist in lst]
 
     for sublist in lst:
-        for item in sublist:
-            flat_list.append(item)
-
+        flat_list.extend(iter(sublist))
     return flat_list
 
 
@@ -116,8 +110,7 @@ def aggregate(lst, n=None):
     if n is not None:
         lst = [sublist[:n] for sublist in lst]
 
-    aggregated_list = [sum(i) for i in zip(*lst)]
-    return aggregated_list
+    return [sum(i) for i in zip(*lst)]
 
 
 def repeated_numbers(m, n):
@@ -134,10 +127,7 @@ def repeated_numbers(m, n):
     -------
     list
     """
-    lst = []
-    for i in range(1, m + 1):
-        lst.append([i] * n)
-
+    lst = [[i] * n for i in range(1, m + 1)]
     lst = flatten(lst)
     return lst
 
@@ -216,10 +206,7 @@ def is_recursive(formula_source, name):
         return "forward"
 
     search2 = re.search(r"\W" + name + r"\(t\+1\)", formula_source)
-    if bool(search2):
-        return "backward"
-
-    return "not_recursive"
+    return "backward" if bool(search2) else "not_recursive"
 
 
 def print_log(msg):

@@ -23,7 +23,7 @@ def load_settings(settings=None):
         Full set of settings.
     """
     if settings is None:
-        settings = dict()
+        settings = {}
 
     initial_settings = {
         "AGGREGATE": True,
@@ -109,9 +109,7 @@ def get_model_input(modelpoint_module, model_module, settings):
 
         variables.append(variable)
 
-    # Ensure that model variables are not overwritten by formulas with the same name
-    overwritten = list(set(ModelVariable.instances) - set(variables))
-    if len(overwritten) > 0:
+    if overwritten := list(set(ModelVariable.instances) - set(variables)):
         for item in overwritten:
             if item.assigned_formula is None:
                 raise CashflowModelError("\nThere are two variables with the same name. "
@@ -127,8 +125,8 @@ def get_model_input(modelpoint_module, model_module, settings):
 
 def start(model_name, settings):
     settings = load_settings(settings)
-    modelpoint_module = importlib.import_module(model_name + ".modelpoint")
-    model_module = importlib.import_module(model_name + ".model")
+    modelpoint_module = importlib.import_module(f"{model_name}.modelpoint")
+    model_module = importlib.import_module(f"{model_name}.model")
     variables, modelpoints = get_model_input(modelpoint_module, model_module, settings)
     model = Model(variables, modelpoints, settings)
     model.run()
